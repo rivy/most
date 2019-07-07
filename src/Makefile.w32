@@ -10,12 +10,13 @@ LDFLAGS =
 #ARCH=djg
 ARCH=gw32
 
-SLANGINC = ../../slang/src#               Location of slang.h
+SLANGDIR = ../../slang
+SLANGINC = $(SLANGDIR)/src#               Location of slang.h
 SLANGLIB = $(SLANGINC)/$(ARCH)objs#       Location of libslang.a
 
 
 #-----------------------------------------------------------------------------
-# 4. Location where object files are placed 
+# 4. Location where object files are placed
 #-----------------------------------------------------------------------------
 OBJDIR = $(ARCH)objs
 SRCDIR = .
@@ -29,7 +30,7 @@ OFILES =  buffer.o cmd.o display.o edit.o file.o help.o keym.o keyparse.o line.o
 EXEC = most
 CONFIG_H = config.h
 ALL_CFLAGS = $(CFLAGS) -I$(SLANGINC)
-EXECLIBS = -L../$(SLANGLIB) -lslang
+EXECLIBS = -L$(SLANGLIB) -lslang
 #
 COMPILE_CMD = $(CC) -c $(ALL_CFLAGS)
 #
@@ -37,15 +38,16 @@ all: $(EXEC)
 $(EXEC): $(OBJDIR) $(CONFIG_H) $(OBJDIR)/$(EXEC)
 	@echo $(EXEC) created in $(OBJDIR)
 $(OBJDIR)/$(EXEC): $(OBJS)
-	cd $(OBJDIR); $(CC) *.o -o $(EXEC) $(LDFLAGS) $(EXECLIBS)
+	cd $(OBJDIR)
+	$(CC) $(OBJS) -o $(EXEC) $(LDFLAGS) $(EXECLIBS)
 #
 $(OBJDIR):
 	-mkdir $(OBJDIR)
 #
 $(CONFIG_H) : $(SRCDIR)/w32conf.h
-	cp $(SRCDIR)/w32conf.h $(CONFIG_H)
+	copy $(SRCDIR)\w32conf.h $(CONFIG_H)
 clean:
-	rm -f $(OBJDIR)/* *~
+	rm -rf $(OBJDIR)\* *~
 
 $(OBJDIR)/buffer.o : $(SRCDIR)/buffer.c $(DOT_O_DEPS) $(buffer_O_DEP)
 	$(COMPILE_CMD) $(SRCDIR)/buffer.c -o $(OBJDIR)/buffer.o
